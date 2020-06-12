@@ -254,7 +254,7 @@ module Octopus
     protected
 
     def connection_bad(error)
-      error.include? "PG::ConnectionBad" || error.include? "org.postgresql.util.PSQLException: This connection has been closed."
+      error.include?("PG::ConnectionBad") || error.include?("org.postgresql.util.PSQLException: This connection has been closed.")
     end
 
     # @thiagopradi - This legacy method missing logic will be keep for a while for compatibility

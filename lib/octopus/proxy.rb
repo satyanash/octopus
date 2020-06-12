@@ -33,6 +33,8 @@ module Octopus
       :release_advisory_lock, :prepare_binds_for_database, :cacheable_query, :column_name_for_operation,
       :prepared_statements, :transaction_state, :create_table, to: :select_connection
 
+    CONN_CLOSED_MAX_RETRIES = 1
+
     def execute(sql, name = nil)
       begin
         retries ||= 0
@@ -43,7 +45,7 @@ module Octopus
         if connection_bad(e.message)
           Octopus.logger.error "Octopus.logger.error execute: #{e.message}"
           conn.verify!
-          retry if (retries += 1) < 3
+          retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
           raise e
         end
@@ -60,7 +62,7 @@ module Octopus
         if connection_bad(e.message)
           Octopus.logger.error "Octopus.logger.error insert: #{e.message}"
           conn.verify!
-          retry if (retries += 1) < 3
+          retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
           raise e
         end
@@ -78,7 +80,7 @@ module Octopus
         if connection_bad(e.message)
           Octopus.logger.error "Octopus.logger.error update: #{e.message}"
           conn.verify!
-          retry if (retries += 1) < 3
+          retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
           raise e
         end
@@ -164,7 +166,7 @@ module Octopus
         if connection_bad(e.message)
           Octopus.logger.error "Octopus.logger.error transaction: #{e.message}"
           select_connection.verify!
-          retry if (retries += 1) < 3
+          retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
           raise e
         end
@@ -284,7 +286,7 @@ module Octopus
         if connection_bad(e.message)
           Octopus.logger.error "Octopus.logger.error legacy_method_missing_logic: #{e.message}"
           select_connection.verify!
-          retry if (retries += 1) < 3
+          retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
           raise e
         end

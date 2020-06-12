@@ -43,7 +43,7 @@ module Octopus
         conn.execute(sql, name)
       rescue ActiveRecord::StatementInvalid => e
         if connection_bad(e.message)
-          Octopus.logger.error "Octopus.logger.error execute: #{e.message}"
+          Octopus.logger.error "Octopus: Bad Connection in execute: #{e.message}"
           conn.verify!
           retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
@@ -60,7 +60,7 @@ module Octopus
         conn.insert(arel, name, pk, id_value, sequence_name, binds)
       rescue ActiveRecord::StatementInvalid => e
         if connection_bad(e.message)
-          Octopus.logger.error "Octopus.logger.error insert: #{e.message}"
+          Octopus.logger.error "Octopus: Bad Connection in insert: #{e.message}"
           conn.verify!
           retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
@@ -78,7 +78,7 @@ module Octopus
         conn.update(arel, name, binds)
       rescue ActiveRecord::StatementInvalid => e
         if connection_bad(e.message)
-          Octopus.logger.error "Octopus.logger.error update: #{e.message}"
+          Octopus.logger.error "Octopus: Bad Connection in update: #{e.message}"
           conn.verify!
           retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
@@ -164,7 +164,7 @@ module Octopus
         end
       rescue ActiveRecord::StatementInvalid => e
         if connection_bad(e.message)
-          Octopus.logger.error "Octopus.logger.error transaction: #{e.message}"
+          Octopus.logger.error "Octopus: Bad Connection in transaction: #{e.message}"
           select_connection.verify!
           retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
@@ -284,7 +284,7 @@ module Octopus
         end
       rescue ActiveRecord::StatementInvalid => e
         if connection_bad(e.message)
-          Octopus.logger.error "Octopus.logger.error legacy_method_missing_logic: #{e.message}"
+          Octopus.logger.error "Octopus: Bad Connection in legacy_method_missing_logic: #{e.message}"
           select_connection.verify!
           retry if (retries += 1) <= CONN_CLOSED_MAX_RETRIES
         else
